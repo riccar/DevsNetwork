@@ -11,7 +11,25 @@ const app = express();
  */
 connectDB();
 
+/**
+ * Init Middleware
+ */
+
+//Allows to get json data in request.body
+app.use(express.json({
+  extended: false
+}));
+
 app.get('/', (req, res) => res.send('Server API Running'));
+
+/**
+ * Define Routes - Map each route to the proper file in routes/api
+ */
+
+app.use('/api/users', require('./routes/api/users'));
+app.use('/api/auth', require('./routes/api/auth'));
+app.use('/api/profile', require('./routes/api/profile'));
+app.use('/api/posts', require('./routes/api/posts'));
 
 /**
  * Define PORT based on deployed environment or 5000 by default
