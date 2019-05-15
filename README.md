@@ -11,8 +11,13 @@ config: Global configuration
 gravatar: To display user's pictures in their profiles
 jsonwebtoken: To create and validates tokens for API calls authorization
 mongoose: MongoDB data layer abstraction for easier interaction with DB
-request: To make http requests to other APIs 
+request: To make http requests to other APIs
 
 ## NPM Dev Packages dependencies
+
 nodemon: to watch and refresh express files when changed
-concurrently: to run express and react server simultaneously 
+concurrently: to run express and react server simultaneously
+
+## Requirements
+
+/config/default.json - Use default-sample.json as a guide
