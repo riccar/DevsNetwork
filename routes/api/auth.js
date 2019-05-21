@@ -5,6 +5,7 @@ const auth = require('../../middleware/auth');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const { check, validationResult } = require('express-validator/check');
+const authController = require('../../controllers/authController')
 
 const User = require('../../models/User');
 /**
@@ -13,26 +14,21 @@ const User = require('../../models/User');
  * @access  Protected
  * By passing the auth export function, this route is now protected.
  */
-router.get('/', auth, async (req, res) => {
-  //Attempt to find and return the user matching the id in the req object, which
-  //was set by the middleware during the token validation.
-  //-password doesn't return this field.
-  try {
-    const user = await User.findById(req.user.id).select('-password');
-    res.json(user);
-  } catch (err) {
-    console.log(err.messsage);
-    res.status(500).send('Server Error');
-  }   
- });
-
+router.get('/', auth, authController.getUser);
 
 /**
  * @route   POST api/auth
  * @desc    Authenticate user & get token
  * @access  Public - No token needed
  */
-router.post('/', [
+router.post('/', authController.postUser);
+
+/**
+ * @route   POST api/auth
+ * @desc    Authenticate user & get token
+ * @access  Public - No token needed
+ */
+router.post('/x', [
   /***
    * Express validator check function requires the following
    * name of the filed, error message, validation rules
@@ -92,9 +88,7 @@ async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
-  }
-
-  
+  }  
 });
 
 module.exports = router;
