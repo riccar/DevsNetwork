@@ -1,11 +1,14 @@
 const userService = require('../services/userService');
 const jwtService = require('../services/jwtService');
-const { check, validationResult } = require('express-validator/check');
+const { validationResult } = require('express-validator/check');
 
-exports.getUser = async (req, res) => {
-  //Attempt to find and return the user matching the id in the req object, which
-  //was set by the middleware during the token validation.
-  //-password doesn't return this field.
+/***
+ * Attempt to find and return the user matching the id in the req object, which
+ * was set by the middleware during the token validation.
+ */
+
+exports.getAuthorizedUser = async (req, res) => {
+  
   try {
     const userId = req.user.id;
     const user = await userService.getUser(userId);//User.findById(req.user.id).select('-password');
@@ -16,9 +19,11 @@ exports.getUser = async (req, res) => {
   }   
 }
 
-exports.postUser = async (req, res) => {  
-  
-  /*
+/***
+ * Get signed token for registered user
+ */
+exports.signUserToken = async (req, res) => {  
+
   //get any possible error in the request object
   const errors = validationResult(req);
 
@@ -28,7 +33,6 @@ exports.postUser = async (req, res) => {
       errors: errors.array()
     });
   }
-  */
 
   try {
     const { email, password } = req.body;
@@ -37,7 +41,7 @@ exports.postUser = async (req, res) => {
     if (!user) {
       return res
         .status(400)
-        .json({ errors: [{ msg: 'Invalid Credentials1' }] });
+        .json({ errors: [{ msg: 'Invalid Credentials' }] });
     }
 
     const validPassword = await userService.isValidPassword(password, user);
@@ -45,10 +49,10 @@ exports.postUser = async (req, res) => {
     if (!validPassword) {
       return res
         .status(400)
-        .json({ errors: [{ msg: 'Invalid Credentials2' }] });
+        .json({ errors: [{ msg: 'Invalid Credentials' }] });
     }
 
-    const token = await jwtService.signToken(user, function(err, token) {
+    jwtService.signToken(user, function(err, token) {
       if (err) throw err;
       res.json({ token });
     });
