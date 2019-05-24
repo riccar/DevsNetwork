@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 
 /**
- * Middleware function. It has access to the request and respose object
+ * Middleware function. It has access to the request and response object
  * and a callback called next() to be executed after finished so the next piece of 
  * middleware can be executed.
  */

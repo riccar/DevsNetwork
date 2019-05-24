@@ -1,5 +1,8 @@
-const profileService = require('../services/profileService');
 const { validationResult } = require('express-validator/check');
+
+const profileService = require('../services/profileService');
+const userService = require('../services/userService');
+
 
 exports.getUserProfile = async (req, res) => {
   try {
@@ -77,4 +80,113 @@ exports.getUserProfileById = async (req, res) => {
     }
     res.status(500).send('Server Error');
   }
+}
+
+exports.deleteProfileUserAndPosts = async (req, res) => {
+  //@TODO: remove users posts
+
+  try {
+    //remove profile
+    userId = req.user.id;
+    await profileService.deleteUserProfile({ user: userId });
+    //remove user
+    await userService.deleteUser({ _id: userId });
+
+    res.json({ msg: 'User deleted' });  
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+}
+
+exports.addProfileExperience = async (req, res) => {
+  
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ 
+      errors: errors.array() 
+    });
+  }
+
+  //Create an experience object with all the expected fields from the req.body
+  const experience = {
+    title,
+    company,
+    location,
+    from,
+    to,
+    current,
+    description
+  } = req.body;
+  
+  try {
+    const userId = req.user.id;
+    //Call the service to update the profile with the new experience object
+    const profile = await profileService.addProfileExperience(userId, experience);
+    
+    res.json(profile);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+}
+
+exports.deleteProfileExperience = async (req, res) => {
+  experienceId = req.params.experienceId;
+  userId = req.user.id;
+  try {
+    const profile = await profileService.deleteProfileExperience(userId, experienceId);
+    if (!profile) return res.status(400).json({ msg: 'Profile not found' });
+    res.json(profile);    
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+  
+}
+
+exports.addProfileEducation = async (req, res) => {
+  
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ 
+      errors: errors.array() 
+    });
+  }
+
+  //Create an education object with all the expected fields from the req.body
+  const education = {
+    school,
+    degree,
+    fieldofstudy,
+    from,
+    to,
+    current,
+    description
+  } = req.body;
+  
+  try {
+    const userId = req.user.id;
+    //Call the service to update the profile with the new experience object
+    const profile = await profileService.addProfileEducation(userId, education);
+    
+    res.json(profile);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+}
+
+exports.deleteProfileEducation = async (req, res) => {
+  educationId = req.params.educationId;
+  userId = req.user.id;
+  try {
+    const profile = await profileService.deleteProfileEducation(userId, educationId);
+    if (!profile) return res.status(400).json({ msg: 'Profile not found' });
+    res.json(profile);    
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+  
 }

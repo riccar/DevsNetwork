@@ -42,3 +42,6 @@ exports.getUserAvatar = async (email) => {
   });
 }
 
+exports.deleteUser = async (userId) => {
+  return await User.findOneAndRemove(userId);
+}
