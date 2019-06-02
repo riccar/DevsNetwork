@@ -1,4 +1,6 @@
 {
   "mongoURI": "mongodb+srv://<user>:<password>@<cluster>-<random-string>.mongodb.net/test?retryWrites=true",
-  "jwtSecret": "secretPassPhrase"
+  "jwtSecret": "secretPassPhrase",
+  "githubClientId": "clientId",
+  "githubSecret": "secret"
 }

@@ -81,4 +81,12 @@ router.put('/education', [auth, [
  */
 router.delete('/education/:educationId', auth, profileController.deleteProfileEducation);
  
+/**
+ * @route GET api/profile/github/:username
+ * @desc Get user repos from Github
+ * @access Public
+ */
+
+router.get('/github/:username', profileController.getUserGithubRepos);
+
 module.exports = router;

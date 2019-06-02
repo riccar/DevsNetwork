@@ -1,7 +1,8 @@
 const { validationResult } = require('express-validator/check');
-
+const request = require('request');
 const profileService = require('../services/profileService');
 const userService = require('../services/userService');
+const config = require('config');
 
 
 exports.getUserProfile = async (req, res) => {
@@ -189,4 +190,32 @@ exports.deleteProfileEducation = async (req, res) => {
     res.status(500).send('Server Error');
   }
   
+}
+
+exports.getUserGithubRepos = async (req, res) => {
+  try {
+    const userName = req.params.username;
+    const githubClientId = config.get('githubClientId');
+    const githubSecret = config.get('githubSecret')
+    const options = {
+      uri: `https://api.github.com/users/${userName}/repos?per_page5&sort=created:asc&client_id=${githubClientId}&client_secret=${githubSecret}`,
+      method: 'GET',
+      headers: { 'user-agent': 'node.js' }
+    };
+    //request receives the options and a callback function 
+    //with the params: error (if any), response, and body
+    request(options, (error, response, body) => {
+      if(error) console.error(error);
+
+      if(response.statusCode !== 200) {
+        return res.status(404).json({ msg: 'no Github profile found'});
+      }
+
+      res.json(JSON.parse(body));
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+
 }
