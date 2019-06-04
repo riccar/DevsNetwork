@@ -1,9 +1,14 @@
 const Post = require('../models/Post');
 
 exports.postPost = async postData => { //PUN!
-  console.log(postData);
   post = new Post(postData);
-  console.log(post);
   return await post.save();
+}
 
+exports.getPosts = async () => {
+  return await Post.find().sort({date: -1});
+}
+
+exports.getPost = async postId => {
+  return await Post.findById(postId);
 }
