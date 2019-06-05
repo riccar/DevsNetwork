@@ -61,7 +61,7 @@ exports.deleteProfileExperience = async (userId, experienceId) => {
     { new: true }
   );
   
-  if (!profile) return null
+  if (!profile) return null;
   await profile.save();
   return profile;
 }
