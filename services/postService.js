@@ -26,15 +26,6 @@ exports.likePost = async (post, userId) => {
 }
 
 exports.unlikePost = async (post, userId) => {
-  //Delete post using $pull mongoose command to remove items from array
-  /*const likeId = post.likes.map(like => {
-    if (like.user.toString() === userId) return like.id
-  })
-  if (likeId) {
-    post.likes.pull(likeId);
-    await post.save();
-  }*/
-  console.log(post.id, userId);
   post = await Post.findOneAndUpdate(
     { _id: post.id },
     { $pull: { 'likes': { user: userId } } },
@@ -42,4 +33,27 @@ exports.unlikePost = async (post, userId) => {
   );
   await post.save();
   return post.likes;
+}
+
+exports.commentPost = async (post, comment) => {
+  post.comments.unshift(comment);
+  await post.save();
+  return post.comments;
+}
+
+exports.getPostComment = (post, commentId) => {
+  const comment = post.comments.find(
+    comment => comment.id === commentId
+  )
+  return comment;
+}
+
+exports.deletePostComment = async (post, comment) => {
+  comment.remove();
+  await post.save();
+  return post.comments;
+}
+
+exports.isCommentAuthor = (comment, userId) => {
+  return comment.user.toString() === userId;
 }

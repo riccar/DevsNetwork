@@ -37,7 +37,7 @@ const PostSchema = new Schema({
       userName: { //user name to avoid having to query user table
         type: String
       },
-      avatart: { //user avatar to avoid having to query user table
+      avatar: { //user avatar to avoid having to query user table
         type: String
       },
       date: {

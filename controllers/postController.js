@@ -120,7 +120,82 @@ exports.unlikePost = async (req, res) => {
     likes = await postService.unlikePost(post, userId);
     return res.json(likes);
   } catch (err) {
+    console.error(err.message);
+    if (err.kind == 'ObjectId') {
+      return res.status(404).json({ msg: 'Post not found' });
+    }
+    return res.status(500).send('Server Error');
+  }
+  
+}
+
+exports.commentPost = async (req, res) => {
+
+  //get any possible error in the request object
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array()
+    });
+  }
+  postId = req.params.postId;
+  userId = req.user.id;
+  text = req.body.text;
+  try {
+    //Get the post
+    const post = await postService.getPost(postId);
+    if (!post) return res.status(404).json({ msg: 'Post not found'});
+    //Get commenting user name and avatar
+    const user = await userService.getUser(userId);
+
+    //Add a comment to the comment array
+    const comment = {
+      user: userId,
+      text: text,
+      userName: user.name,
+      avatar: user.avatar
+    }
+    const comments = await postService.commentPost(post, comment);
+    //return list of comments
+    res.json(comments);  
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind == 'ObjectId') {
+      return res.status(404).json({ msg: 'Post not found' });
+    }
+    return res.status(500).send('Server Error');
+  }
+  
+}
+
+exports.deletePostComment = async (req, res) => {
+
+  postId = req.params.postId;
+  commentId = req.params.commentId;
+  userId = req.user.id;
+
+  try {
+    //Get the post
+    const post = await postService.getPost(postId);
+    if (!post) return res.status(404).json({ msg: 'Post not found'});
     
+    //Check if comment exists
+    const comment = postService.getPostComment(post, commentId);
+    if (!comment) return res.status(404).json({ msg: 'Comment not found'});    
+    //Ensure requesting user is the author of requested comment
+    if (!postService.isCommentAuthor(comment, userId)) 
+      return res.status(401).json({ msg: "Unauthorized" });
+
+    //Delete comment and return remaining comments
+    const comments = await postService.deletePostComment(post, comment);
+    res.json(comments);
+  
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind == 'ObjectId') {
+      return res.status(404).json({ msg: 'Post not found' });
+    }
+    return res.status(500).send('Server Error');
   }
   
 }
