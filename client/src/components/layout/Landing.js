@@ -1,5 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+
+import Button from '../UI/Button';
 
 const Section = styled.section`
   position: relative;
@@ -39,39 +42,19 @@ const Content = styled.div`
   }
 `;
 
-const Btn = styled.a`
-  display: inline-block;
-  background: ${props => props.theme.lightBgColor};
-  color: #333;
-  padding: 0.4rem 1.3rem;
-  font-size: 1rem;
-  border: none;
-  cursor: pointer;
-  margin-right: 0.5rem;
-  transition: opacity 0.2s ease-in;
-  outline: none;
-  text-decoration: none;
-`;
-
-const BtnPrimary = styled(Btn)`
-  background: ${props => props.theme.mainBgColor};
-  color: ${props => props.theme.lightBgColor};
-
-`
-
 const Landing = () => {
   return (
-    <Section className="landing">
-      <Overlay className="dark-overlay">
-        <Content className="landing-inner">
-          <h1 className="x-large">Developer Network</h1>
-          <p className="lead">
+    <Section>
+      <Overlay>
+        <Content>
+          <h1>Developer Network</h1>
+          <p>
             Create a developer profile/portfolio, share posts and get help from
             other developers
           </p>
-          <div className="buttons">
-            <BtnPrimary href="register.html" className="btn btn-primary">Sign Up</BtnPrimary>
-            <Btn href="login.html" className="btn btn-light">Login</Btn>
+          <div>
+            <Button.Primary as={Link} to="/register">Sign Up</Button.Primary>
+            <Button as={Link} to="/login">Login</Button>
           </div>
         </Content>
       </Overlay>

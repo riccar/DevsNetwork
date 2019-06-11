@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const Nav = styled.nav`
   width: 100vw;
@@ -30,12 +31,12 @@ const NavBar = () => {
      
   <Nav>
     <h1>
-      <a href="index.html"><i className="fas fa-code"></i> DevNetwork</a>
+      <Link to="/"><i className="fas fa-code"></i> DevNetwork</Link>
     </h1>
     <ul>
-      <li><a href="profiles.html">Developers</a></li>
-      <li><a href="register.html">Register</a></li>
-      <li><a href="login.html">Login</a></li>
+      <li><Link to="/profiles">Developers</Link></li>
+      <li><Link to="/register">Register</Link></li>
+      <li><Link to="/login">Login</Link></li>
     </ul>
   </Nav>
     
