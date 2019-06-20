@@ -182,6 +182,7 @@ exports.deletePostComment = async (req, res) => {
     //Check if comment exists
     const comment = postService.getPostComment(post, commentId);
     if (!comment) return res.status(404).json({ msg: 'Comment not found'});    
+    
     //Ensure requesting user is the author of requested comment
     if (!postService.isCommentAuthor(comment, userId)) 
       return res.status(401).json({ msg: "Unauthorized" });

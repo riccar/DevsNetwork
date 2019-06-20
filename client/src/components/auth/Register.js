@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import { registerUser } from '../../api/users';
+import { setAlert } from '../../actions/alert';
+import PropTypes from 'prop-types';
+
 import LargeHeader from '../UI/LargeHeader'
 import Title from '../UI/Title';
 import Form from '../UI/From';
@@ -9,7 +13,7 @@ import Paragraph from '../UI/Paragraph';
 import Button from '../UI/Button';
 
 
-const Register = () => {
+const Register = ({ setAlert }) => {
 
   const [formData, setFormData] = useState({
     name: '',
@@ -25,7 +29,7 @@ const Register = () => {
   const onSubmit = async e => {
     e.preventDefault();
     if(password !== password2) {
-      console.log('Passwords do not match');
+      setAlert('Passwords do not match', 'danger', 5000);
     } else {
       const res = await registerUser( {name, email, password} );
       console.log(res.data);
@@ -83,7 +87,14 @@ const Register = () => {
         Already have an account? <Link to="/login">Sign In</Link>
       </Paragraph>
     </>
-  )
-}
+  );
+};
 
-export default Register
+Register.propTypes = {
+  setAlert: PropTypes.func.isRequired
+};
+
+export default connect(
+  null, 
+  { setAlert }
+)(Register);
